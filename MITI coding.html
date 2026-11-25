@@ -1,0 +1,1005 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MITI 4.2.1 Coding Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .slider {
+            background: linear-gradient(to right, #5D5CDE 0%, #5D5CDE var(--value), #e5e7eb var(--value), #e5e7eb 100%);
+        }
+        .dark .slider {
+            background: linear-gradient(to right, #5D5CDE 0%, #5D5CDE var(--value), #374151 var(--value), #374151 100%);
+        }
+        /* Custom styles for collapsible section */
+        .collapsible-header {
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .collapsible-header svg {
+            transition: transform 0.3s ease;
+        }
+        .collapsible-header[aria-expanded="true"] svg {
+            transform: rotate(90deg);
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-primary mb-2">MITI 4.2.1 Coding Assistant</h1>
+            <p class="text-xl text-gray-600 dark:text-gray-300">Behavior Coding & Analysis Tool</p>
+        </div>
+
+        <!-- File Name Section -->
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-4">File Name</h2>
+            <input type="text" id="file-name" placeholder="Enter file name for export (e.g., Session_1_Client_A)" 
+                   class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-base focus:ring-2 focus:ring-primary focus:border-transparent">
+        </div>
+
+        <!-- Target Behavior -->
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-4">Target Change</h2>
+            <input type="text" id="target-behavior" placeholder="Enter target behavior..." 
+                   class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-base focus:ring-2 focus:ring-primary focus:border-transparent">
+        </div>
+
+
+
+
+        <!-- Global Ratings -->
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 sm:p-6 mb-8">
+            <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Global Ratings</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+                <div class="space-y-4">
+                    <h3 class="font-semibold text-primary">Cultivating Change Talk</h3>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-sm">1</span>
+                        <input type="range" id="cultivating" min="1" max="5" value="3" 
+                               class="flex-1 slider appearance-none h-2 rounded-lg cursor-pointer">
+                        <span class="text-sm">5</span>
+                    </div>
+                    <div class="text-center font-bold text-lg" id="cultivating-value">3</div>
+                    <div class="bg-white dark:bg-gray-700 p-3 rounded-lg border border-gray-200 dark:border-gray-600">
+                        <p class="text-sm text-gray-700 dark:text-gray-300" id="cultivating-description">
+                            Clinician often attends to the client's language in favor of change, but misses some opportunities to encourage change talk.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="space-y-4">
+                    <h3 class="font-semibold text-primary">Softening Sustain Talk</h3>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-sm">1</span>
+                        <input type="range" id="softening" min="1" max="5" value="3" 
+                               class="flex-1 slider appearance-none h-2 rounded-lg cursor-pointer">
+                        <span class="text-sm">5</span>
+                    </div>
+                    <div class="text-center font-bold text-lg" id="softening-value">3</div>
+                    <div class="bg-white dark:bg-gray-700 p-3 rounded-lg border border-gray-200 dark:border-gray-600">
+                        <p class="text-sm text-gray-700 dark:text-gray-300" id="softening-description">
+                            Clinician gives preference to the client's language in favor of the status quo, but may show some instances of shifting the focus away from sustain talk.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="space-y-4">
+                    <h3 class="font-semibold text-primary">Partnership</h3>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-sm">1</span>
+                        <input type="range" id="partnership" min="1" max="5" value="3" 
+                               class="flex-1 slider appearance-none h-2 rounded-lg cursor-pointer">
+                        <span class="text-sm">5</span>
+                    </div>
+                    <div class="text-center font-bold text-lg" id="partnership-value">3</div>
+                    <div class="bg-white dark:bg-gray-700 p-3 rounded-lg border border-gray-200 dark:border-gray-600">
+                        <p class="text-sm text-gray-700 dark:text-gray-300" id="partnership-description">
+                            Clinician incorporates client's contributions but does so in a lukewarm or erratic fashion.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="space-y-4">
+                    <h3 class="font-semibold text-primary">Empathy</h3>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-sm">1</span>
+                        <input type="range" id="empathy" min="1" max="5" value="3" 
+                               class="flex-1 slider appearance-none h-2 rounded-lg cursor-pointer">
+                        <span class="text-sm">5</span>
+                    </div>
+                    <div class="text-center font-bold text-lg" id="empathy-value">3</div>
+                    <div class="bg-white dark:bg-gray-700 p-3 rounded-lg border border-gray-200 dark:border-gray-600">
+                        <p class="text-sm text-gray-700 dark:text-gray-300" id="empathy-description">
+                            Clinician is actively trying to understand the client's perspective, with modest success.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <!-- Timer -->
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 sm:p-6 mb-8">
+            <h2 class="text-xl sm:text-2xl font-bold mb-4">Session Timer</h2>
+            <div class="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+                <div class="text-4xl sm:text-6xl font-mono font-bold text-primary" id="timer-display">00:00</div>
+                <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3 w-full sm:w-auto">
+                    <button id="start-timer" onclick="startTimer()" 
+                            class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg transition-colors w-full sm:w-auto">
+                        Start
+                    </button>
+                    <button id="pause-timer" onclick="pauseTimer()" disabled
+                            class="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto">
+                        Pause
+                    </button>
+                    <button onclick="resetTimer()" 
+                            class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg transition-colors w-full sm:w-auto">
+                        Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <!-- Behavior Counts -->
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 sm:p-6 mb-8">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-2 sm:space-y-0">
+                <h2 class="text-xl sm:text-2xl font-bold">Behavior Counts</h2>
+                <button onclick="resetCounts()" 
+                        class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors w-full sm:w-auto">
+                    Reset All Counts
+                </button>
+            </div>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">Click main areas to increment counts, use +/- buttons to adjust</p>
+            
+            <!-- Yellow Group -->
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-4">
+                <div class="text-center">
+                    <div onclick="incrementCount('Q')" class="bg-yellow-500 hover:bg-yellow-600 text-white p-3 rounded-lg mb-2 cursor-pointer h-20 flex flex-col justify-center">
+                        <div class="font-bold text-sm">Question</div>
+                        <div class="text-2xl" id="count-Q">0</div>
+                    </div>
+                    <div class="flex gap-1 justify-center">
+                        <button onclick="decrementCount('Q')" class="bg-white bg-opacity-70 hover:bg-opacity-90 text-gray-800 px-4 py-1 rounded text-sm border border-gray-300">-</button>
+                        <button onclick="incrementCount('Q')" class="bg-white bg-opacity-70 hover:bg-opacity-90 text-gray-800 px-4 py-1 rounded text-sm border border-gray-300">+</button>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div onclick="incrementCount('SR')" class="bg-yellow-500 hover:bg-yellow-600 text-white p-3 rounded-lg mb-2 cursor-pointer h-20 flex flex-col justify-center">
+                        <div class="font-bold text-sm">Simple Reflection</div>
+                        <div class="text-2xl" id="count-SR">0</div>
+                    </div>
+                    <div class="flex gap-1 justify-center">
+                        <button onclick="decrementCount('SR')" class="bg-white bg-opacity-70 hover:bg-opacity-90 text-gray-800 px-4 py-1 rounded text-sm border border-gray-300">-</button>
+                        <button onclick="incrementCount('SR')" class="bg-white bg-opacity-70 hover:bg-opacity-90 text-gray-800 px-4 py-1 rounded text-sm border border-gray-300">+</button>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div onclick="incrementCount('CR')" class="bg-yellow-500 hover:bg-yellow-600 text-white p-3 rounded-lg mb-2 cursor-pointer h-20 flex flex-col justify-center">
+                        <div class="font-bold text-sm">Complex Reflection</div>
+                        <div class="text-2xl" id="count-CR">0</div>
+                    </div>
+                    <div class="flex gap-1 justify-center">
+                        <button onclick="decrementCount('CR')" class="bg-white bg-opacity-70 hover:bg-opacity-90 text-gray-800 px-4 py-1 rounded text-sm border border-gray-300">-</button>
+                        <button onclick="incrementCount('CR')" class="bg-white bg-opacity-70 hover:bg-opacity-90 text-gray-800 px-4 py-1 rounded text-sm border border-gray-300">+</button>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div onclick="incrementCount('GI')" class="bg-yellow-500 hover:bg-yellow-600 text-white p-3 rounded-lg mb-2 cursor-pointer h-20 flex flex-col justify-center">
+                        <div class="font-bold text-sm">Giving Information</div>
+                        <div class="text-2xl" id="count-GI">0</div>
+                    </div>
+                    <div class="flex gap-1 justify-center">
+                        <button onclick="decrementCount('GI')" class="bg-white bg-opacity-70 hover:bg-opacity-90 text-gray-800 px-4 py-1 rounded text-sm border border-gray-300">-</button>
+                        <button onclick="incrementCount('GI')" class="bg-white bg-opacity-70 hover:bg-opacity-90 text-gray-800 px-4 py-1 rounded text-sm border border-gray-300">+</button>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div onclick="incrementCount('Persuade_with')" class="bg-yellow-500 hover:bg-yellow-600 text-white p-3 rounded-lg mb-2 cursor-pointer h-20 flex flex-col justify-center">
+                        <div class="font-bold text-sm">Persuade with Permission</div>
+                        <div class="text-2xl" id="count-Persuade_with">0</div>
+                    </div>
+                    <div class="flex gap-1 justify-center">
+                        <button onclick="decrementCount('Persuade_with')" class="bg-white bg-opacity-70 hover:bg-opacity-90 text-gray-800 px-4 py-1 rounded text-sm border border-gray-300">-</button>
+                        <button onclick="incrementCount('Persuade_with')" class="bg-white bg-opacity-70 hover:bg-opacity-90 text-gray-800 px-4 py-1 rounded text-sm border border-gray-300">+</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Green Group -->
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+                <div class="text-center">
+                    <div onclick="incrementCount('AF')" class="bg-green-500 hover:bg-green-600 text-white p-3 rounded-lg mb-2 cursor-pointer">
+                        <div class="font-bold text-sm">Affirm</div>
+                        <div class="text-2xl" id="count-AF">0</div>
+                    </div>
+                    <div class="flex gap-1 justify-center">
+                        <button onclick="decrementCount('AF')" class="bg-white bg-opacity-70 hover:bg-opacity-90 text-gray-800 px-4 py-1 rounded text-sm border border-gray-300">-</button>
+                        <button onclick="incrementCount('AF')" class="bg-white bg-opacity-70 hover:bg-opacity-90 text-gray-800 px-4 py-1 rounded text-sm border border-gray-300">+</button>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div onclick="incrementCount('Seek')" class="bg-green-500 hover:bg-green-600 text-white p-3 rounded-lg mb-2 cursor-pointer">
+                        <div class="font-bold text-sm">Seeking Collaboration</div>
+                        <div class="text-2xl" id="count-Seek">0</div>
+                    </div>
+                    <div class="flex gap-1 justify-center">
+                        <button onclick="decrementCount('Seek')" class="bg-white bg-opacity-70 hover:bg-opacity-90 text-gray-800 px-4 py-1 rounded text-sm border border-gray-300">-</button>
+                        <button onclick="incrementCount('Seek')" class="bg-white bg-opacity-70 hover:bg-opacity-90 text-gray-800 px-4 py-1 rounded text-sm border border-gray-300">+</button>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div onclick="incrementCount('Emphasize')" class="bg-green-500 hover:bg-green-600 text-white p-3 rounded-lg mb-2 cursor-pointer">
+                        <div class="font-bold text-sm">Emphasizing Autonomy</div>
+                        <div class="text-2xl" id="count-Emphasize">0</div>
+                    </div>
+                    <div class="flex gap-1 justify-center">
+                        <button onclick="decrementCount('Emphasize')" class="bg-white bg-opacity-70 hover:bg-opacity-90 text-gray-800 px-4 py-1 rounded text-sm border border-gray-300">-</button>
+                        <button onclick="incrementCount('Emphasize')" class="bg-white bg-opacity-70 hover:bg-opacity-90 text-gray-800 px-4 py-1 rounded text-sm border border-gray-300">+</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Red Group -->
+            <div class="grid grid-cols-2 gap-4">
+                <div class="text-center">
+                    <div onclick="incrementCount('Persuade')" class="bg-red-500 hover:bg-red-600 text-white p-3 rounded-lg mb-2 cursor-pointer">
+                        <div class="font-bold text-sm">Persuade</div>
+                        <div class="text-2xl" id="count-Persuade">0</div>
+                    </div>
+                    <div class="flex gap-1 justify-center">
+                        <button onclick="decrementCount('Persuade')" class="bg-white bg-opacity-70 hover:bg-opacity-90 text-gray-800 px-4 py-1 rounded text-sm border border-gray-300">-</button>
+                        <button onclick="incrementCount('Persuade')" class="bg-white bg-opacity-70 hover:bg-opacity-90 text-gray-800 px-4 py-1 rounded text-sm border border-gray-300">+</button>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div onclick="incrementCount('Confront')" class="bg-red-500 hover:bg-red-600 text-white p-3 rounded-lg mb-2 cursor-pointer">
+                        <div class="font-bold text-sm">Confront</div>
+                        <div class="text-2xl" id="count-Confront">0</div>
+                    </div>
+                    <div class="flex gap-1 justify-center">
+                        <button onclick="decrementCount('Confront')" class="bg-white bg-opacity-70 hover:bg-opacity-90 text-gray-800 px-4 py-1 rounded text-sm border border-gray-300">-</button>
+                        <button onclick="incrementCount('Confront')" class="bg-white bg-opacity-70 hover:bg-opacity-90 text-gray-800 px-4 py-1 rounded text-sm border border-gray-300">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <!-- Behavior Logs -->
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-6">Behavior Logs</h2>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">Click on behavior names to expand and view detailed logs</p>
+            
+            <div class="space-y-2" id="behavior-logs">
+                <!-- Logs will be populated by JavaScript -->
+            </div>
+        </div>
+
+
+
+
+        <!-- Proficiency Table -->
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-6">Proficiency Table</h2>
+            
+            <!-- Summary Measures Table -->
+            <div class="overflow-x-auto mb-6">
+                <table class="w-full border-collapse border border-gray-300 dark:border-gray-600">
+                    <thead>
+                        <tr class="bg-gray-100 dark:bg-gray-700">
+                            <th class="border border-gray-300 dark:border-gray-600 p-3 text-left font-semibold">Measure</th>
+                            <th class="border border-gray-300 dark:border-gray-600 p-3 text-center font-semibold">Fair</th>
+                            <th class="border border-gray-300 dark:border-gray-600 p-3 text-center font-semibold">Good</th>
+                            <th class="border border-gray-300 dark:border-gray-600 p-3 text-center font-semibold">Clinician Rating</th>
+                            <th class="border border-gray-300 dark:border-gray-600 p-3 text-center font-semibold">Level</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="border border-gray-300 dark:border-gray-600 p-3">Relational global measures</td>
+                            <td class="border border-gray-300 dark:border-gray-600 p-3 text-center">Average of 4</td>
+                            <td class="border border-gray-300 dark:border-gray-600 p-3 text-center">Average of 5</td>
+                            <td class="border border-gray-300 dark:border-gray-600 p-3 text-center font-bold" id="relational-avg">3.0</td>
+                            <td class="border border-gray-300 dark:border-gray-600 p-3 text-center font-bold" id="relational-level">Poor</td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-300 dark:border-gray-600 p-3">Technical global measures</td>
+                            <td class="border border-gray-300 dark:border-gray-600 p-3 text-center">Average of 3</td>
+                            <td class="border border-gray-300 dark:border-gray-600 p-3 text-center">Average of 4</td>
+                            <td class="border border-gray-300 dark:border-gray-600 p-3 text-center font-bold" id="technical-avg">3.0</td>
+                            <td class="border border-gray-300 dark:border-gray-600 p-3 text-center font-bold" id="technical-level">Fair</td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-300 dark:border-gray-600 p-3">Reflections to question ratio</td>
+                            <td class="border border-gray-300 dark:border-gray-600 p-3 text-center">1:1</td>
+                            <td class="border border-gray-300 dark:border-gray-600 p-3 text-center">>2:1</td>
+                            <td class="border border-gray-300 dark:border-gray-600 p-3 text-center font-bold" id="ratio-value">0.0:1</td>
+                            <td class="border border-gray-300 dark:border-gray-600 p-3 text-center font-bold" id="ratio-level">Poor</td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-300 dark:border-gray-600 p-3">% complex reflections</td>
+                            <td class="border border-gray-300 dark:border-gray-600 p-3 text-center">40%</td>
+                            <td class="border border-gray-300 dark:border-gray-600 p-3 text-center">50%</td>
+                            <td class="border border-gray-300 dark:border-gray-600 p-3 text-center font-bold" id="complex-pct">0.0%</td>
+                            <td class="border border-gray-300 dark:border-gray-600 p-3 text-center font-bold" id="complex-level">Poor</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Quick Metrics Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white dark:bg-gray-700 p-4 rounded-lg text-center">
+                    <div class="text-sm text-gray-600 dark:text-gray-300">Relational</div>
+                    <div class="text-xl font-bold" id="relational-card">3.0</div>
+                    <div class="text-xs px-2 py-1 rounded-full inline-block mt-1" id="relational-badge">Poor</div>
+                </div>
+                <div class="bg-white dark:bg-gray-700 p-4 rounded-lg text-center">
+                    <div class="text-sm text-gray-600 dark:text-gray-300">Technical</div>
+                    <div class="text-xl font-bold" id="technical-card">3.0</div>
+                    <div class="text-xs px-2 py-1 rounded-full inline-block mt-1" id="technical-badge">Fair</div>
+                </div>
+                <div class="bg-white dark:bg-gray-700 p-4 rounded-lg text-center">
+                    <div class="text-sm text-gray-600 dark:text-gray-300">R:Q Ratio</div>
+                    <div class="text-xl font-bold" id="ratio-card">0.0:1</div>
+                    <div class="text-xs px-2 py-1 rounded-full inline-block mt-1" id="ratio-badge">Poor</div>
+                </div>
+                <div class="bg-white dark:bg-gray-700 p-4 rounded-lg text-center">
+                    <div class="text-sm text-gray-600 dark:text-gray-300">Complex %</div>
+                    <div class="text-xl font-bold" id="complex-card">0.0%</div>
+                    <div class="text-xs px-2 py-1 rounded-full inline-block mt-1" id="complex-badge">Poor</div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Red Flags Section -->
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 mb-8">
+            <div class="collapsible-header" onclick="toggleCollapsible('red-flags-content')" aria-expanded="false">
+                <h2 class="text-2xl font-bold">Red Flags</h2>
+                <svg class="w-6 h-6 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </div>
+            <div id="red-flags-content" class="hidden mt-4 space-y-3">
+                <div class="flex items-start">
+                    <input type="checkbox" id="rf1" name="red-flag" value="Interviewer/Client avoids hesitation, stumbles, or natural speech fillers (e.g., 'um,' 'well...')." class="mt-1 h-4 w-4 text-primary rounded focus:ring-primary">
+                    <label for="rf1" class="ml-3 text-base text-gray-700 dark:text-gray-300">Interviewer/Client avoids hesitation, stumbles, or natural speech fillers (e.g., 'um,' 'well...').</label>
+                </div>
+                <div class="flex items-start">
+                    <input type="checkbox" id="rf2" name="red-flag" value="Interviewer/Client speaks with an unusually smooth or rehearsed tone throughout." class="mt-1 h-4 w-4 text-primary rounded focus:ring-primary">
+                    <label for="rf2" class="ml-3 text-base text-gray-700 dark:text-gray-300">Interviewer/Client speaks with an unusually smooth or rehearsed tone throughout.</label>
+                </div>
+                <div class="flex items-start">
+                    <input type="checkbox" id="rf3" name="red-flag" value="Timing of responses suggests rehearsed delivery (e.g., instant replies without processing time)." class="mt-1 h-4 w-4 text-primary rounded focus:ring-primary">
+                    <label for="rf3" class="ml-3 text-base text-gray-700 dark:text-gray-300">Timing of responses suggests rehearsed delivery (e.g., instant replies without processing time).</label>
+                </div>
+                <div class="flex items-start">
+                    <input type="checkbox" id="rf4" name="red-flag" value="Interviewer responses appear pre-planned rather than contingent on client statements." class="mt-1 h-4 w-4 text-primary rounded focus:ring-primary">
+                    <label for="rf4" class="ml-3 text-base text-gray-700 dark:text-gray-300">Interviewer responses appear pre-planned rather than contingent on client statements.</label>
+                </div>
+                <div class="flex items-start">
+                    <input type="checkbox" id="rf5" name="red-flag" value="There is little or no emotional variability, or there is emotional incongruence, even during sensitive or meaningful topics." class="mt-1 h-4 w-4 text-primary rounded focus:ring-primary">
+                    <label for="rf5" class="ml-3 text-base text-gray-700 dark:text-gray-300">There is little or no emotional variability, or there is emotional incongruence, even during sensitive or meaningful topics.</label>
+                </div>
+                <div class="flex items-start">
+                    <input type="checkbox" id="rf6" name="red-flag" value="Client responses are overly polished or “textbook” in nature." class="mt-1 h-4 w-4 text-primary rounded focus:ring-primary">
+                    <label for="rf6" class="ml-3 text-base text-gray-700 dark:text-gray-300">Client responses are overly polished or “textbook” in nature.</label>
+                </div>
+                <div class="flex items-start">
+                    <input type="checkbox" id="rf7" name="red-flag" value="The client presents issues that feel idealized or too neatly structured." class="mt-1 h-4 w-4 text-primary rounded focus:ring-primary">
+                    <label for="rf7" class="ml-3 text-base text-gray-700 dark:text-gray-300">The client presents issues that feel idealized or too neatly structured.</label>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Comments -->
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-6">Qualitative Feedback</h2>
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium mb-2">Applicant strengths:</label>
+                    <textarea id="applicant-strengths" rows="4" 
+                              class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-base focus:ring-2 focus:ring-primary focus:border-transparent"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Most important area for improvement:</label>
+                    <textarea id="improvement-area" rows="4" 
+                              class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-base focus:ring-2 focus:ring-primary focus:border-transparent"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Other remarks:</label>
+                    <textarea id="other-remarks" rows="4" 
+                              class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-base focus:ring-2 focus:ring-primary focus:border-transparent"></textarea>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <!-- Export -->
+        <div class="text-center">
+            <button onclick="exportData()" 
+                    class="bg-primary hover:bg-purple-600 text-white px-8 py-3 rounded-lg text-lg font-semibold transition-colors">
+                Export Session Data
+            </button>
+        </div>
+    </div>
+
+
+
+
+    <script>
+        // Dark mode setup
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+
+
+
+
+        // Global variables
+        let timerStartTime = 0;
+        let timerElapsed = 0;
+        let timerInterval = null;
+        let isTimerRunning = false;
+
+
+
+
+        // Behavior codes and their full names
+        const behaviors = ['Q', 'SR', 'CR', 'GI', 'Persuade_with', 'AF', 'Seek', 'Emphasize', 'Persuade', 'Confront'];
+        const behaviorNames = {
+            'GI': 'Giving Information',
+            'Persuade': 'Persuade',
+            'Persuade_with': 'Persuade with Permission',
+            'Q': 'Question',
+            'SR': 'Simple Reflection',
+            'CR': 'Complex Reflection',
+            'AF': 'Affirm',
+            'Seek': 'Seeking Collaboration',
+            'Emphasize': 'Emphasizing Autonomy',
+            'Confront': 'Confront'
+        };
+
+        // Desired order for export
+        const exportBehaviorOrder = [
+            'GI',
+            'Persuade',
+            'Persuade_with',
+            'Q',
+            'SR',
+            'CR',
+            'AF',
+            'Seek',
+            'Emphasize',
+            'Confront'
+        ];
+
+
+        // Rating descriptions for each domain
+        const ratingDescriptions = {
+            cultivating: {
+                1: "Clinician shows no explicit attention to, or preference for, the client's language in favor of changing.",
+                2: "Clinician sporadically attends to client language in favor of change -- frequently misses opportunities to encourage change talk.",
+                3: "Clinician often attends to the client's language in favor of change, but misses some opportunities to encourage change talk.",
+                4: "Clinician consistently attends to the client's language about change and makes efforts to encourage it.",
+                5: "Clinician shows a marked and consistent effort to increase the depth, strength, or momentum of the client's language in favor of change."
+            },
+            softening: {
+                1: "Clinician consistently responds to the client's language in a manner that facilitates the frequency or depth of arguments in favor of the status quo.",
+                2: "Clinician usually chooses to explore, focus on, or respond to the client's language in favor of the status quo.",
+                3: "Clinician gives preference to the client's language in favor of the status quo, but may show some instances of shifting the focus away from sustain talk.",
+                4: "Clinician typically avoids an emphasis on client language favoring the status quo.",
+                5: "Clinician shows a marked and consistent effort to decrease the depth, strength, or momentum of the client's language in favor of the status quo."
+            },
+            partnership: {
+                1: "Clinician actively assumes the expert role for the majority of the interaction with the client. Collaboration or partnership is absent.",
+                2: "Clinician superficially responds to opportunities to collaborate.",
+                3: "Clinician incorporates client's contributions but does so in a lukewarm or erratic fashion.",
+                4: "Clinician fosters collaboration and power sharing so that client's contributions impact the session in ways that they otherwise would not.",
+                5: "Clinician actively fosters and encourages power sharing in the interaction in such a way that client's contributions substantially influence the nature of the session."
+            },
+            empathy: {
+                1: "Clinician gives little or no attention to the client's perspective.",
+                2: "Clinician makes sporadic efforts to explore the client's perspective. Clinician's understanding may be inaccurate or may detract from the client's true meaning.",
+                3: "Clinician is actively trying to understand the client's perspective, with modest success.",
+                4: "Clinician makes active and repeated efforts to understand the client's point of view. Shows evidence of accurate understanding of the client's worldview, although mostly limited to explicit content.",
+                5: "Clinician shows evidence of deep understanding of client's point of view, not just for what has been explicitly stated but what the client means but has not yet said."
+            }
+        };
+
+
+
+
+        let behaviorCounts = {};
+        let behaviorLogs = {};
+
+
+
+
+        // Initialize data
+        behaviors.forEach(behavior => {
+            behaviorCounts[behavior] = 0;
+            behaviorLogs[behavior] = [];
+        });
+
+
+
+
+        // Timer functions
+        function startTimer() {
+            if (!isTimerRunning) {
+                timerStartTime = Date.now() - timerElapsed;
+                timerInterval = setInterval(updateTimerDisplay, 10);
+                isTimerRunning = true;
+                document.getElementById('start-timer').disabled = true;
+                document.getElementById('pause-timer').disabled = false;
+            }
+        }
+
+
+
+
+        function pauseTimer() {
+            if (isTimerRunning) {
+                clearInterval(timerInterval);
+                isTimerRunning = false;
+                document.getElementById('start-timer').disabled = false;
+                document.getElementById('pause-timer').disabled = true;
+            }
+        }
+
+
+
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timerElapsed = 0;
+            isTimerRunning = false;
+            document.getElementById('timer-display').textContent = '00:00';
+            document.getElementById('start-timer').disabled = false;
+            document.getElementById('pause-timer').disabled = true;
+        }
+
+
+
+
+        function updateTimerDisplay() {
+            timerElapsed = Date.now() - timerStartTime;
+            const totalSeconds = Math.floor(timerElapsed / 1000);
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            
+            document.getElementById('timer-display').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+
+
+
+        function getCurrentTimestamp() {
+            const totalSeconds = Math.floor(timerElapsed / 1000);
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+
+
+
+        // Behavior counting functions
+        function incrementCount(behavior) {
+            behaviorCounts[behavior]++;
+            const timestamp = getCurrentTimestamp();
+            behaviorLogs[behavior].push({
+                action: 'increment',
+                timestamp: timestamp,
+                count: behaviorCounts[behavior]
+            });
+            updateDisplay();
+            updateBehaviorLogs();
+        }
+
+
+
+
+        function decrementCount(behavior) {
+            if (behaviorCounts[behavior] > 0) {
+                behaviorCounts[behavior]--;
+                // Remove the last increment log entry for this behavior
+                const logs = behaviorLogs[behavior];
+                for (let i = logs.length - 1; i >= 0; i--) {
+                    if (logs[i].action === 'increment') {
+                        logs.splice(i, 1);
+                        break;
+                    }
+                }
+                updateDisplay();
+                updateBehaviorLogs();
+            }
+        }
+
+
+
+
+        function resetCounts() {
+            behaviors.forEach(behavior => {
+                behaviorCounts[behavior] = 0;
+                behaviorLogs[behavior] = [];
+            });
+            updateDisplay();
+            updateBehaviorLogs();
+        }
+
+
+
+
+        function updateDisplay() {
+            // Update count displays
+            behaviors.forEach(behavior => {
+                document.getElementById(`count-${behavior}`).textContent = behaviorCounts[behavior];
+            });
+            
+            // Update proficiency calculations
+            calculateProficiency();
+        }
+
+
+
+
+        function updateBehaviorLogs() {
+            const logsContainer = document.getElementById('behavior-logs');
+            logsContainer.innerHTML = '';
+
+
+
+
+            behaviors.forEach(behavior => {
+                const hasLogs = behaviorLogs[behavior].length > 0;
+                const div = document.createElement('div');
+                div.className = 'border border-gray-300 dark:border-gray-600 rounded-lg';
+                
+                div.innerHTML = `
+                    <div class="p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 flex justify-between items-center" 
+                         onclick="toggleLogExpansion('${behavior}')">
+                        <span class="font-semibold">${behaviorNames[behavior]} (${behaviorCounts[behavior]})</span>
+                        <span class="text-sm text-gray-500">${hasLogs ? behaviorLogs[behavior].length + ' entries' : 'No entries'}</span>
+                    </div>
+                    <div id="log-${behavior}" class="hidden p-3 border-t border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700">
+                        ${hasLogs ? 
+                            behaviorLogs[behavior].map((log, index) => 
+                                `<div class="text-sm py-1">${index + 1}. ${log.timestamp} - Count: ${log.count}</div>`
+                            ).join('') : 
+                            '<div class="text-sm text-gray-500">No log entries</div>'
+                        }
+                    </div>
+                `;
+                
+                logsContainer.appendChild(div);
+            });
+        }
+
+
+
+
+        function toggleLogExpansion(behavior) {
+            const logDiv = document.getElementById(`log-${behavior}`);
+            logDiv.classList.toggle('hidden');
+        }
+
+
+        // Collapsible section function
+        function toggleCollapsible(id) {
+            const content = document.getElementById(id);
+            const header = content.previousElementSibling; // Get the header div
+            const isExpanded = header.getAttribute('aria-expanded') === 'true';
+
+
+            if (isExpanded) {
+                content.classList.add('hidden');
+                header.setAttribute('aria-expanded', 'false');
+            } else {
+                content.classList.remove('hidden');
+                header.setAttribute('aria-expanded', 'true');
+            }
+        }
+
+
+
+
+        function calculateProficiency() {
+            // Global measures
+            const cultivating = parseInt(document.getElementById('cultivating').value);
+            const softening = parseInt(document.getElementById('softening').value);
+            const partnership = parseInt(document.getElementById('partnership').value);
+            const empathy = parseInt(document.getElementById('empathy').value);
+
+
+
+
+            // Relational (Partnership + Empathy)
+            const relationalAvg = (partnership + empathy) / 2;
+            document.getElementById('relational-avg').textContent = relationalAvg.toFixed(1);
+            document.getElementById('relational-card').textContent = relationalAvg.toFixed(1);
+            
+            let relationalLevel = 'Poor';
+            if (relationalAvg >= 5) relationalLevel = 'Good';
+            else if (relationalAvg >= 4) relationalLevel = 'Fair';
+            
+            document.getElementById('relational-level').textContent = relationalLevel;
+            document.getElementById('relational-badge').textContent = relationalLevel;
+            document.getElementById('relational-badge').className = `text-xs px-2 py-1 rounded-full inline-block mt-1 ${
+                relationalLevel === 'Good' ? 'bg-green-200 text-green-800 dark:bg-green-800 dark:text-green-200' :
+                relationalLevel === 'Fair' ? 'bg-yellow-200 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-200' :
+                'bg-red-200 text-red-800 dark:bg-red-800 dark:text-red-200'
+            }`;
+
+
+
+
+            // Technical (Cultivating + Softening)
+            const technicalAvg = (cultivating + softening) / 2;
+            document.getElementById('technical-avg').textContent = technicalAvg.toFixed(1);
+            document.getElementById('technical-card').textContent = technicalAvg.toFixed(1);
+            
+            let technicalLevel = 'Poor';
+            if (technicalAvg >= 4) technicalLevel = 'Good';
+            else if (technicalAvg >= 3) technicalLevel = 'Fair';
+            
+            document.getElementById('technical-level').textContent = technicalLevel;
+            document.getElementById('technical-badge').textContent = technicalLevel;
+            document.getElementById('technical-badge').className = `text-xs px-2 py-1 rounded-full inline-block mt-1 ${
+                technicalLevel === 'Good' ? 'bg-green-200 text-green-800 dark:bg-green-800 dark:text-green-200' :
+                technicalLevel === 'Fair' ? 'bg-yellow-200 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-200' :
+                'bg-red-200 text-red-800 dark:bg-red-800 dark:text-red-200'
+            }`;
+
+
+
+
+            // Reflection to Question Ratio
+            const totalReflections = behaviorCounts['SR'] + behaviorCounts['CR'];
+            const totalQuestions = behaviorCounts['Q'];
+            const ratio = totalQuestions > 0 ? totalReflections / totalQuestions : 0;
+            const ratioText = totalQuestions > 0 ? `${ratio.toFixed(1)}:1` : '0.0:1';
+            
+            document.getElementById('ratio-value').textContent = ratioText;
+            document.getElementById('ratio-card').textContent = ratioText;
+            
+            let ratioLevel = 'Poor';
+            if (ratio > 2) ratioLevel = 'Good';
+            else if (ratio >= 1) ratioLevel = 'Fair';
+            
+            document.getElementById('ratio-level').textContent = ratioLevel;
+            document.getElementById('ratio-badge').textContent = ratioLevel;
+            document.getElementById('ratio-badge').className = `text-xs px-2 py-1 rounded-full inline-block mt-1 ${
+                ratioLevel === 'Good' ? 'bg-green-200 text-green-800 dark:bg-green-800 dark:text-green-200' :
+                ratioLevel === 'Fair' ? 'bg-yellow-200 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-200' :
+                'bg-red-200 text-red-800 dark:bg-red-800 dark:text-red-200'
+            }`;
+
+
+
+
+            // Complex Reflection Percentage
+            const complexPct = totalReflections > 0 ? (behaviorCounts['CR'] / totalReflections) * 100 : 0;
+            document.getElementById('complex-pct').textContent = complexPct.toFixed(1) + '%';
+            document.getElementById('complex-card').textContent = complexPct.toFixed(1) + '%';
+            
+            let complexLevel = 'Poor';
+            if (complexPct >= 50) complexLevel = 'Good';
+            else if (complexPct >= 40) complexLevel = 'Fair';
+            
+            document.getElementById('complex-level').textContent = complexLevel;
+            document.getElementById('complex-badge').textContent = complexLevel;
+            document.getElementById('complex-badge').className = `text-xs px-2 py-1 rounded-full inline-block mt-1 ${
+                complexLevel === 'Good' ? 'bg-green-200 text-green-800 dark:bg-green-800 dark:text-green-200' :
+                complexLevel === 'Fair' ? 'bg-yellow-200 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-200' :
+                'bg-red-200 text-red-800 dark:bg-red-800 dark:text-red-200'
+            }`;
+        }
+
+
+
+
+        function updateRatingDescription(domain, value) {
+            const descriptionElement = document.getElementById(domain + '-description');
+            descriptionElement.textContent = ratingDescriptions[domain][value];
+        }
+
+
+        function updateOtherRemarks() {
+            const checkboxes = document.querySelectorAll('input[name="red-flag"]:checked');
+            const otherRemarksTextarea = document.getElementById('other-remarks');
+            let remarks = [];
+
+
+            if (checkboxes.length > 0) {
+                remarks.push("The sample sounds scripted or over rehearsed with the following reasons:");
+                checkboxes.forEach(checkbox => {
+                    remarks.push(`- ${checkbox.value}`);
+                });
+            }
+            // Preserve existing remarks if they don't start with the red flag prefix
+            const currentRemarks = otherRemarksTextarea.value.split('\n').filter(line => !line.startsWith("The sample sounds scripted or over rehearsed with the following reasons:") && !line.startsWith("- "));
+            
+            if (remarks.length > 0) {
+                otherRemarksTextarea.value = remarks.join('\n') + (currentRemarks.length > 0 ? '\n\n' + currentRemarks.join('\n') : '');
+            } else {
+                otherRemarksTextarea.value = currentRemarks.join('\n');
+            }
+        }
+
+
+
+
+        function exportData() {
+            try {
+                const fileNameInput = document.getElementById('file-name').value.trim();
+                const defaultFileName = 'MITI_Session_Report';
+                const fileName = fileNameInput ? fileNameInput.replace(/[^a-z0-9]/gi, '_').toLowerCase() : defaultFileName; // Sanitize filename
+
+                const targetBehavior = document.getElementById('target-behavior').value;
+                const applicantStrengths = document.getElementById('applicant-strengths').value;
+                const improvementArea = document.getElementById('improvement-area').value;
+                const otherRemarks = document.getElementById('other-remarks').value;
+            
+                let exportText = `MITI 4.2.1 Coding Session Report\n`;
+                exportText += `==========================================\n\n`;
+                exportText += `File Name: ${fileNameInput || defaultFileName}\n`; // Include the original input filename
+                exportText += `Target Behavior: ${targetBehavior}\n`;
+                exportText += `Session Duration: ${document.getElementById('timer-display').textContent}\n\n`;
+                
+                exportText += `Global Ratings:\n`;
+                exportText += `- Cultivating Change Talk: ${document.getElementById('cultivating').value}\n`;
+                exportText += `- Softening Sustain Talk: ${document.getElementById('softening').value}\n`;
+                exportText += `- Partnership: ${document.getElementById('partnership').value}\n`;
+                exportText += `- Empathy: ${document.getElementById('empathy').value}\n\n`;
+                
+                exportText += `Behavior Counts:\n`;
+                exportBehaviorOrder.forEach(behavior => { // Use the defined export order
+                    exportText += `- ${behaviorNames[behavior]}: ${behaviorCounts[behavior]}\n`;
+                });
+                exportText += `\n`;
+                
+                exportText += `Proficiency Summary:\n`;
+                exportText += `- Relational: ${document.getElementById('relational-avg').textContent} (${document.getElementById('relational-level').textContent})\n`;
+                exportText += `- Technical: ${document.getElementById('technical-avg').textContent} (${document.getElementById('technical-level').textContent})\n`;
+                exportText += `- R:Q Ratio: ${document.getElementById('ratio-value').textContent} (${document.getElementById('ratio-level').textContent})\n`;
+                exportText += `- Complex %: ${document.getElementById('complex-pct').textContent} (${document.getElementById('complex-level').textContent})\n\n`;
+                
+                exportText += `Detailed Behavior Logs (Chronological):\n`;
+                exportText += `=======================================\n`;
+                
+                // Create chronological list of all behavior logs
+                const allLogs = [];
+                behaviors.forEach(behavior => {
+                    behaviorLogs[behavior].forEach(log => {
+                        allLogs.push({
+                            behavior: behavior,
+                            behaviorName: behaviorNames[behavior],
+                            timestamp: log.timestamp,
+                            count: log.count
+                        });
+                    });
+                });
+                
+                // Sort by timestamp
+                allLogs.sort((a, b) => {
+                    const timeA = a.timestamp.split(':').map(Number);
+                    const timeB = b.timestamp.split(':').map(Number);
+                    const totalSecondsA = timeA[0] * 60 + timeA[1];
+                    const totalSecondsB = timeB[0] * 60 + timeB[1];
+                    return totalSecondsA - totalSecondsB;
+                });
+                
+                if (allLogs.length > 0) {
+                    allLogs.forEach((log, index) => {
+                        exportText += `${index + 1}. ${log.timestamp} - ${log.behaviorName}\n`;
+                    });
+                } else {
+                    exportText += `No behavior logs recorded.\n`;
+                }
+                exportText += `\n`;
+                
+                if (applicantStrengths) {
+                    exportText += `Applicant strengths:\n${applicantStrengths}\n\n`;
+                }
+                
+                if (improvementArea) {
+                    exportText += `Most Important Area for Improvement:\n${improvementArea}\n\n`;
+                }
+                
+                if (otherRemarks) {
+                    exportText += `Other Remarks:\n${otherRemarks}\n\n`;
+                }
+                
+                exportText += `Report generated: ${new Date().toLocaleString()}\n`;
+                
+                const blob = new Blob([exportText], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${fileName}.txt`; // Use the sanitized filename for download
+                a.style.display = 'none';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            } catch (error) {
+                console.error('Export failed:', error);
+                alert('Export failed. Please try again.');
+            }
+        }
+
+
+
+
+        // Initialize slider event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            const sliders = ['cultivating', 'softening', 'partnership', 'empathy'];
+            
+            sliders.forEach(sliderId => {
+                const slider = document.getElementById(sliderId);
+                const valueDisplay = document.getElementById(sliderId + '-value');
+                
+                slider.addEventListener('input', function() {
+                    valueDisplay.textContent = this.value;
+                    this.style.setProperty('--value', (this.value - 1) * 25 + '%');
+                    updateRatingDescription(sliderId, this.value);
+                    calculateProficiency();
+                });
+                
+                // Initialize display
+                valueDisplay.textContent = slider.value;
+                slider.style.setProperty('--value', (slider.value - 1) * 25 + '%');
+                updateRatingDescription(sliderId, slider.value);
+            });
+            
+            // Initialize behavior logs display
+            updateBehaviorLogs();
+            calculateProficiency();
+
+
+            // Add event listeners for red flag checkboxes
+            document.querySelectorAll('input[name="red-flag"]').forEach(checkbox => {
+                checkbox.addEventListener('change', updateOtherRemarks);
+            });
+        });
+    </script>
+</body>
+</html>
